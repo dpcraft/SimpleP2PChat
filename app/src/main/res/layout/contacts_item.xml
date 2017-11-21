@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<TextView
+    android:id="@+id/tv_username"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:textAllCaps="false"
+    android:text="UserName"
+    android:gravity="center_horizontal"
+    android:textSize="@dimen/normal_text_size"/>
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textAllCaps="false"
+        android:text="address:port"
+        android:textColor="@android:color/holo_green_light"
+        android:gravity="center_horizontal"
+        android:textSize="@dimen/little_text_size"/>
+</LinearLayout>
