@@ -56,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                     case REGISTER_SUCCESS:
                         userInfoList = ResponseFromServer.getUserInfoList(msg.obj.toString());
                         databaseHelper.refreshUserInfo(userInfoList);
+                        ContactsActivity.actionStart(RegisterActivity.this,"");
                         break;
                     case USERNAME_ALREADY_EXIST:
                         Toast.makeText(RegisterActivity.this,R.string.error_username_exists, Toast.LENGTH_LONG).show();
@@ -117,10 +118,10 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             public void onClick(View view) {
 
                 //userInfoList = Test.initUserInfoList();
-                databaseHelper.refreshUserInfo(userInfoList);
-                ContactsActivity.actionStart(RegisterActivity.this,"");
+                //databaseHelper.refreshUserInfo(userInfoList);
+                //ContactsActivity.actionStart(RegisterActivity.this,"");
 
-                //attemptLogin();
+                attemptLogin();
             }
         });
 
@@ -152,7 +153,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(userName)) {
+        if (TextUtils.isEmpty(userName)) {
             mUserNameEditText.setError(getString(R.string.error_invalid_username));
             focusView = mUserNameEditText;
             cancel = true;
@@ -186,7 +187,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     }
 
     private boolean isPortValid(String port) {
-        int portInt = Integer.getInteger(port);
+        int portInt = Integer.valueOf(port);
         return portInt>=MIN_PORT&&portInt<=MAX_PORT;
     }
 

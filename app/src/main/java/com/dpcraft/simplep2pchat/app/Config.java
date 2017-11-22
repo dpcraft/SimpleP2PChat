@@ -7,6 +7,6 @@ import java.util.HashMap;
  */
 
 public class Config {
-    public static final String URL_REGISTER = "http://192.168.1.102:8080";
+    public static final String URL_REGISTER = "http://192.168.1.102:1234";
     public static HashMap<String,Boolean> IncogModeUsers;
 }
