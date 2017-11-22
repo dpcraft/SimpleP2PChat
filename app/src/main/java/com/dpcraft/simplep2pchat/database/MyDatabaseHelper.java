@@ -128,12 +128,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         List<ChatMessage> msgs;
 
         ContentValues values = new ContentValues();
-        values.put(KEY_TYPE,msg.getType());
-        values.put(KEY_LEFT,msg.isLeft()==true?1:0);
         values.put(KEY_CONTENT, msg.getMessage());
         values.put(KEY_SENDER,msg.getSender());
-        values.put(KEY_RECEIVER,msg.getReceiver());
-        values.put(KEY_SENDFLAG,msg.getSendFlag()==true?1:0);
 
         // Inserting Row
         db.insert(TABLE_MSG, null, values);
@@ -145,19 +141,15 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         // Select All Query
 
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM msgs WHERE receiver = ? OR sender = ?", new String[]{person, person});
+        String query = "SELECT * FROM msgs WHERE sender = "+ person;
+        Cursor cursor = db.rawQuery(query,null);
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
                 ChatMessage msg = new ChatMessage();
-                msg.setId(Integer.parseInt(cursor.getString(0)));
-                msg.setType(cursor.getString(1));
-                msg.setLeft(cursor.getInt(2) == 1);
                 msg.setMessage(cursor.getString(3));
                 msg.setSender(cursor.getString(4));
-                msg.setReceiver(cursor.getString(5));
-                msg.setSendFlag(cursor.getInt(6) == 1);
                 // Adding contact to list
                 msgList.add(msg);
             } while (cursor.moveToNext());

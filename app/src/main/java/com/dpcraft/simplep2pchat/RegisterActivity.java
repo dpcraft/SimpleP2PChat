@@ -56,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                     case REGISTER_SUCCESS:
                         userInfoList = ResponseFromServer.getUserInfoList(msg.obj.toString());
                         databaseHelper.refreshUserInfo(userInfoList);
+                        ContactsActivity.actionStart(RegisterActivity.this,"");
                         break;
                     case USERNAME_ALREADY_EXIST:
                         Toast.makeText(RegisterActivity.this,R.string.error_username_exists, Toast.LENGTH_LONG).show();
@@ -116,61 +117,17 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             @Override
             public void onClick(View view) {
 
-                userInfoList = Test.initUserInfoList();
-                databaseHelper.refreshUserInfo(userInfoList);
-                ContactsActivity.actionStart(RegisterActivity.this,"");
+                //userInfoList = Test.initUserInfoList();
+                //databaseHelper.refreshUserInfo(userInfoList);
+                //ContactsActivity.actionStart(RegisterActivity.this,"");
 
-                //attemptLogin();
+                attemptLogin();
             }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
-
-    /*private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-
-        getLoaderManager().initLoader(0, null, this);
-    }*/
-
-    /*private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }*/
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
-    }
-*/
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -196,7 +153,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(userName)) {
+        if (TextUtils.isEmpty(userName)) {
             mUserNameEditText.setError(getString(R.string.error_invalid_username));
             focusView = mUserNameEditText;
             cancel = true;
@@ -230,7 +187,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     }
 
     private boolean isPortValid(String port) {
-        int portInt = Integer.getInteger(port);
+        int portInt = Integer.valueOf(port);
         return portInt>=MIN_PORT&&portInt<=MAX_PORT;
     }
 
@@ -296,23 +253,12 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             emails.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
-
-        //addEmailsToAutoComplete(emails);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
     }
-
-    /*private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(RegisterActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }*/
 
 
     private interface ProfileQuery {

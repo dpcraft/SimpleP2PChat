@@ -106,17 +106,10 @@ public class ChatActivity extends AppCompatActivity{
                     //create a new msg;
                     if(groupflag.equals("false")) {
                         ChatMessage chatMessage = new ChatMessage();
-                        chatMessage.setSendFlag(true);
-                        chatMessage.setType("txt");
-                        chatMessage.setLeft(false);
+
                         chatMessage.setMessage(chatText.getText().toString());
                         Log.e(TAG, "onClick: new tag " + chatMessage.getMessage());
                         chatMessage.setSender(me);
-                        chatMessage.setReceiver(receiver);
-                        //check if icog is set for this receiver
-                        if (Config.IncogModeUsers != null && Config.IncogModeUsers.get(receiver)) {
-                            chatMessage.setIncogFlag(true);
-                        }
 
                         sendRecvChatMessage(chatMessage);
                     }
