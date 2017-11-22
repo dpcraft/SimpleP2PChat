@@ -5,6 +5,7 @@
     <string name="username">用户名</string>
     <string name="port">端口（1500-65535）</string>
     <string name="action_register">注册</string>
+    <string name="action_send">发送</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_username">用户名不能为空</string>

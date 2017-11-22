@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.dpcraft.simplep2pchat.ChatMessage;
 import com.dpcraft.simplep2pchat.R;
+import com.dpcraft.simplep2pchat.app.MyApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,11 +58,13 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
             LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(R.layout.activity_chat_singlemessage, parent, false);
         }
+
         singleMessageContainer = row.findViewById(R.id.singleMessageContainer);
         ChatMessage chatMessageObj = getItem(position);
         chatText = row.findViewById(R.id.singleMessage);
-        chatText.setText(chatMessageObj.message);
-
+        chatText.setText(chatMessageObj.getMessage());
+        chatText.setBackgroundResource(chatMessageObj.isSentFromMe() ? R.drawable.bubble_a : R.drawable.bubble_b);
+        singleMessageContainer.setGravity(chatMessageObj.isSentFromMe() ? Gravity.RIGHT :Gravity.LEFT);
         return row;
     }
 

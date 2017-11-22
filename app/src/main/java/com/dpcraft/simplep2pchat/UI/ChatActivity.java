@@ -23,6 +23,7 @@ import com.dpcraft.simplep2pchat.ChatMessage;
 import com.dpcraft.simplep2pchat.R;
 import com.dpcraft.simplep2pchat.app.Config;
 import com.dpcraft.simplep2pchat.database.MyDatabaseHelper;
+import com.dpcraft.simplep2pchat.test.Test;
 
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public class ChatActivity extends AppCompatActivity {
         receiver = intent.getStringExtra("username");
         buttonSend = findViewById(R.id.buttonSend);
         listView = findViewById(R.id.listView1);
+        initMessage();
 
         chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(), R.layout.activity_chat_singlemessage);
         listView.setAdapter(chatArrayAdapter);
@@ -146,5 +148,14 @@ public class ChatActivity extends AppCompatActivity {
         context.startActivity(intent);
 
     }
+
+    private void initMessage(){
+        List<ChatMessage> chatMessageList = Test.initChatMessageList();
+        for(ChatMessage chatMessage : chatMessageList){
+            db.addMsg(chatMessage);
+
+        }
+    }
+
 
 }

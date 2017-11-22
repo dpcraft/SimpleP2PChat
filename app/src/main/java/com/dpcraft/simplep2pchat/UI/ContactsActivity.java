@@ -47,6 +47,7 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
 
+
     public static void actionStart(Context context,String data1){
         Intent intent = new Intent(context,ContactsActivity.class);
         intent.putExtra("param1",data1);

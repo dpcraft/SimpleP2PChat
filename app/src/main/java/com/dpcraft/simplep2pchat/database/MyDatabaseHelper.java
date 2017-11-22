@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
@@ -132,6 +133,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_MESSAGE, msg.getMessage());
         values.put(KEY_SENDER,msg.getSender());
+        values.put(KEY_RECVER,msg.getReceiver());
         // Inserting Row
         db.insert(TABLE_MSG, null, values);
         db.close(); // Closing database connection
@@ -141,20 +143,28 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         List<ChatMessage> msgList = new ArrayList<ChatMessage>();
         // Select All Query
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM msgs WHERE sender = "+ person + " OR recver = " + person;
-        Cursor cursor = db.rawQuery(query,null);
+        Cursor cursor = null;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String query = "SELECT * FROM " + TABLE_MSG +" WHERE sender = '"+ person + "' OR recver = '" + person + "'";
+            cursor = db.rawQuery(query,null);
+            if (cursor.moveToFirst()) {
+                do {
+                    ChatMessage msg = new ChatMessage();
+                    msg.setMessage(cursor.getString(1));
+                    msg.setSender(cursor.getString(2));
+                    msg.setReceiver(cursor.getString(3));
+                    // Adding contact to list
+                    msgList.add(msg);
+                } while (cursor.moveToNext());
+            }
+        } catch (SQLiteException e) {
+            Log.d(TAG, "getConversation: sqoliteException");
+            e.printStackTrace();
+        }
 
         // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                ChatMessage msg = new ChatMessage();
-                msg.setMessage(cursor.getString(3));
-                msg.setSender(cursor.getString(4));
-                // Adding contact to list
-                msgList.add(msg);
-            } while (cursor.moveToNext());
-        }
+
         // return msg list
         return msgList;
     }
