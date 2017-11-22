@@ -117,11 +117,11 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             @Override
             public void onClick(View view) {
 
-                //userInfoList = Test.initUserInfoList();
-                //databaseHelper.refreshUserInfo(userInfoList);
-                //ContactsActivity.actionStart(RegisterActivity.this,"");
+                userInfoList = Test.initUserInfoList();
+                databaseHelper.refreshUserInfo(userInfoList);
+                ContactsActivity.actionStart(RegisterActivity.this,"");
 
-                attemptLogin();
+                //attemptLogin();
             }
         });
 

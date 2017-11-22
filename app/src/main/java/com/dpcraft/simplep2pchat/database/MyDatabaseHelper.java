@@ -28,13 +28,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_USER = "user_info";
     private static final String TABLE_MSG = "message";
 
-    private static final String KEY_LEFT = "isleft";
+    private static final String KEY_MESSAGE = "message";
     private static final String KEY_ID = "id";
-    private static final String KEY_TYPE = "type";
-    private static final String KEY_CONTENT = "content";
     private static final String KEY_SENDER = "sender";
-    private static final String KEY_RECEIVER = "receiver";
-    private static final String KEY_SENDFLAG="sendflag";
+    private static final String KEY_RECVER = "recver";
+    private static final String KEY_TIME = "recv_time";
 
     public static final String CREATE_USERINFO = "create table " + TABLE_USER + " ("
             + "id integer primary key autoincrement, "
@@ -42,8 +40,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             + "address varchar(15), "
             + "port integer)";
     public static final String CREATE_MESSAGE = "CREATE TABLE " + TABLE_MSG + "("
-            + KEY_ID + " INTEGER PRIMARY KEY," + KEY_TYPE + " TEXT," + KEY_LEFT + " INTEGER,"
-            + KEY_CONTENT + " TEXT," + KEY_SENDER + " TEXT," + KEY_RECEIVER + " TEXT," + KEY_SENDFLAG + " INTEGER)";
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_MESSAGE + " TEXT,"
+            + KEY_SENDER + " TEXT,"
+            + KEY_RECVER + " TEXT,"
+            + KEY_TIME + " TIMESTAMP NOT NULL DEFAULT (DATETIME('now','localtime')))";
+
 
     public MyDatabaseHelper(Context context,String name,SQLiteDatabase.CursorFactory factory,int version){
         super(context,name,factory,version);
@@ -128,9 +130,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         List<ChatMessage> msgs;
 
         ContentValues values = new ContentValues();
-        values.put(KEY_CONTENT, msg.getMessage());
+        values.put(KEY_MESSAGE, msg.getMessage());
         values.put(KEY_SENDER,msg.getSender());
-
         // Inserting Row
         db.insert(TABLE_MSG, null, values);
         db.close(); // Closing database connection
@@ -141,7 +142,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         // Select All Query
 
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM msgs WHERE sender = "+ person;
+        String query = "SELECT * FROM msgs WHERE sender = "+ person + " OR recver = " + person;
         Cursor cursor = db.rawQuery(query,null);
 
         // looping through all rows and adding to list

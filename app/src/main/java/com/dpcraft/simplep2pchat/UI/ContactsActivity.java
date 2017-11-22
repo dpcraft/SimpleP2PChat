@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.dpcraft.simplep2pchat.ContactsAdapter;
@@ -35,6 +37,13 @@ public class ContactsActivity extends AppCompatActivity {
         ContactsAdapter contactsAdapter = new ContactsAdapter(ContactsActivity.this,R.layout.contacts_item,userInfoList);
         ListView listView = findViewById(R.id.contacts_list);
         listView.setAdapter(contactsAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                UserInfo userInfo = userInfoList.get(position);
+                ChatActivity.actionStart(ContactsActivity.this,userInfo.getUsername());
+            }
+        });
     }
 
 
