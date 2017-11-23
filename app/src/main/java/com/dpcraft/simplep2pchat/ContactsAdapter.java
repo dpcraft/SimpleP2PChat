@@ -1,8 +1,6 @@
 package com.dpcraft.simplep2pchat;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +21,10 @@ public class ContactsAdapter extends ArrayAdapter<UserInfo> {
         super(context,textViewResourceId,userInfoList);
         resourceId = textViewResourceId;
     }
+    public void refreshList(List<UserInfo> userInfoList){
+
+    }
+
     @Override
     public View getView(int position,View convertView,ViewGroup parent){
         UserInfo userInfo = getItem(position);
@@ -38,7 +40,7 @@ public class ContactsAdapter extends ArrayAdapter<UserInfo> {
             view = convertView;
             viewHolder = (ViewHolder)view.getTag();
         }
-        viewHolder.userNameTextView.setText(userInfo.getUsername());
+        viewHolder.userNameTextView.setText(userInfo.getName());
         viewHolder.addressTextView.setText(userInfo.getAddress() + ":" + userInfo.getPort());
         return view;
     }

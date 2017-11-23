@@ -3,6 +3,7 @@ package com.dpcraft.simplep2pchat;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -20,18 +21,18 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.dpcraft.simplep2pchat.UI.ContactsActivity;
+import com.dpcraft.simplep2pchat.app.MyApplication;
+import com.dpcraft.simplep2pchat.data.Register;
 import com.dpcraft.simplep2pchat.data.ResponseFromServer;
 import com.dpcraft.simplep2pchat.data.UserInfo;
 import com.dpcraft.simplep2pchat.database.MyDatabaseHelper;
-import com.dpcraft.simplep2pchat.network.NetworkUtils;
 import com.dpcraft.simplep2pchat.network.ServerUtils;
-import com.dpcraft.simplep2pchat.test.Test;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,9 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     private final int REGISTER_SUCCESS = 200;
     private final int USERNAME_ALREADY_EXIST = 201;
     private List<UserInfo> userInfoList;
+    private ResponseFromServer mResponseFromServer;
+    private MyApplication mMyApplication;
+    private  Register register;
 
 
     private Handler handler = new Handler(){
@@ -54,8 +58,14 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             try {
                 switch (msg.what) {
                     case REGISTER_SUCCESS:
-                        userInfoList = ResponseFromServer.getUserInfoList(msg.obj.toString());
+                        mResponseFromServer = new Gson().fromJson(msg.obj.toString(),ResponseFromServer.class);
+                        userInfoList = mResponseFromServer.getUserInfoList();
                         databaseHelper.refreshUserInfo(userInfoList);
+                        mMyApplication.refreshToken(mResponseFromServer.getToken());
+                        mMyApplication.setRegisterName(register.getName());
+                        mMyApplication.setPort(register.getPort());
+                        Intent intent = new Intent(RegisterActivity.this,KeepAliveService.class);
+                        startService(intent);
                         ContactsActivity.actionStart(RegisterActivity.this,"");
                         break;
                     case USERNAME_ALREADY_EXIST:
@@ -95,13 +105,11 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        mMyApplication = MyApplication.getInstance();
         databaseHelper = new MyDatabaseHelper(this,getResources().getString(R.string.db_name),null,1);
         databaseHelper.getWritableDatabase();
-
         mUserNameEditText = findViewById(R.id.et_username);
         mPortEditText = findViewById(R.id.et_port);
-
-
         Button mRegisterButton = findViewById(R.id.btn_register);
         mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -136,7 +144,6 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         // Store values at the time of the login attempt.
         String userName = mUserNameEditText.getText().toString();
         String port = mPortEditText.getText().toString();
-        String address = NetworkUtils.wifiIpAddress(this);
 
         boolean cancel = false;
         View focusView = null;
@@ -154,7 +161,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             focusView = mPortEditText;
             cancel = true;
         } else if (!isPortValid(port)) {
-            mPortEditText.setError(getString(R.string.error_invalid_email));
+            mPortEditText.setError(getString(R.string.error_invalid_port));
             focusView = mPortEditText;
             cancel = true;
         }
@@ -167,10 +174,9 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            UserInfo myInfo = new UserInfo(userName,address,port);
+            register = new Register(userName,Integer.valueOf(port));
 
-
-            mAuthTask = new UserLoginTask(myInfo, handler);
+            mAuthTask = new UserLoginTask(register, handler);
             mAuthTask.execute((Void) null);
         }
     }
@@ -266,11 +272,11 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final UserInfo mUserInfo;
+        private final Register mRegister;
         private final Handler mHandler;
 
-        UserLoginTask(UserInfo userInfo, Handler handler) {
-            mUserInfo = userInfo;
+        UserLoginTask(Register register, Handler handler) {
+            mRegister = register;
             mHandler = handler;
         }
 
@@ -280,7 +286,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
             try {
                 // Simulate network access.
-                ServerUtils.register(mUserInfo,mHandler);
+                ServerUtils.register(mRegister,mHandler);
 
                 Thread.sleep(2000);
             } catch (InterruptedException e) {

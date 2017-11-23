@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ResponseFromServer {
     private int code;
-    private String msg;
+    private String token;
     private List<UserInfo> userInfoList;
 
     public static List<UserInfo> getUserInfoList(String JSONString){
@@ -23,8 +23,7 @@ public class ResponseFromServer {
         int code = 0;
         try{
             JSONObject jsonObject =new JSONObject(JSONString);
-            String codeStr = jsonObject.getString("code");
-            code = Integer.parseInt(codeStr);
+            code = jsonObject.getInt("code");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -40,12 +39,12 @@ public class ResponseFromServer {
         this.code = code;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getToken() {
+        return token;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public List<UserInfo> getUserInfoList() {

@@ -5,6 +5,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.dpcraft.simplep2pchat.app.Config;
+import com.dpcraft.simplep2pchat.data.Register;
 import com.dpcraft.simplep2pchat.data.ResponseFromServer;
 import com.dpcraft.simplep2pchat.data.UserInfo;
 
@@ -24,7 +25,7 @@ import okhttp3.Response;
  */
 
 public class ServerUtils {
-    public static void register(final UserInfo userInfo, final Handler handler){
+    public static void register(final Register register, final Handler handler){
         Callback callback = new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -49,7 +50,7 @@ public class ServerUtils {
         String url = Config.URL_REGISTER;
         OkHttpClient okHttpClient = new OkHttpClient();
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON,userInfo.toJSON());
+        RequestBody body = RequestBody.create(JSON,register.toJSON());
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)

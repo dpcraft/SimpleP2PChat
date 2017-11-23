@@ -10,38 +10,35 @@ import java.util.List;
  */
 
 public class UserInfo {
-    private String username;
+    private String name;
     private String address;
-    private String port;
+    private int port;
 
-    public UserInfo(String username,String address,String port){
-        this.username = username;
+    public UserInfo(String username,String address,int port){
+        this.name = username;
         this.address = address;
         this.port = port;
 
     };
     public UserInfo(){
-        this.username = null;
+        this.name = null;
         this.address = null;
-        this.port = null;
+        this.port = 0;
     }
 
-    public String toJSON(){
-        Gson gson = new Gson();
-        return gson.toJson(this);
-    }
+
     public static List<UserInfo> getUserListFromJSON(String JSONstring){
         Gson gson = new Gson();
         List<UserInfo> userInfoList = gson.fromJson(JSONstring,new TypeToken<List<UserInfo>>(){}.getType());
         return userInfoList;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.name = username;
     }
 
     public String getAddress() {
@@ -52,11 +49,11 @@ public class UserInfo {
         this.address = address;
     }
 
-    public String getPort() {
+    public int getPort() {
         return port;
     }
 
-    public void setPort(String port) {
+    public void setPort(int port) {
         this.port = port;
     }
 

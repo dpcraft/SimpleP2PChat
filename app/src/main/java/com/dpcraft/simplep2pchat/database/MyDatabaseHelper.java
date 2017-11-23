@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.dpcraft.simplep2pchat.ChatMessage;
 import com.dpcraft.simplep2pchat.data.UserInfo;
@@ -78,7 +77,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public boolean refreshUserInfo(List<UserInfo> userInfoList) {
         for(UserInfo user: userInfoList ){
             System.out.println(TAG + "1:");
-            System.out.println(user.getUsername() + " " + user.getAddress() + ":" + user.getPort());
+            System.out.println(user.getName() + " " + user.getAddress() + ":" + user.getPort());
         }
 
 
@@ -88,9 +87,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             db.delete(TABLE_USER, null, null);
             ContentValues contentValues = new ContentValues();
             for (UserInfo userInfo : userInfoList) {
-                contentValues.put("username", userInfo.getUsername());
+                contentValues.put("username", userInfo.getName());
                 contentValues.put("address", userInfo.getAddress());
-                contentValues.put("port", Integer.parseInt(userInfo.getPort()));
+                contentValues.put("port", userInfo.getPort());
                 db.insert("user_info", null, contentValues);
                 contentValues.clear();
             }
@@ -112,7 +111,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
                 userInfoList.add(new UserInfo(cursor.getString(cursor.getColumnIndex("username")),
                         cursor.getString(cursor.getColumnIndex("address")),
-                        Integer.toString(cursor.getInt((cursor.getColumnIndex("port"))))));
+                        cursor.getInt((cursor.getColumnIndex("port")))));
 
             }while(cursor.moveToNext());
         }

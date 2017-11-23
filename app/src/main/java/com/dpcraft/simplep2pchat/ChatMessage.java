@@ -1,14 +1,9 @@
 package com.dpcraft.simplep2pchat;
 
 
-import android.util.Log;
-
 import com.dpcraft.simplep2pchat.app.MyApplication;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-
-import static android.content.ContentValues.TAG;
 
 public class ChatMessage implements Serializable {
 
@@ -49,7 +44,7 @@ public class ChatMessage implements Serializable {
 	}
 
 	public boolean isSentFromMe(){
-		return getSender().equals(MyApplication.getInstance().getUserName());
+		return getSender().equals(MyApplication.getInstance().getRegisterName());
 	}
 
 }
