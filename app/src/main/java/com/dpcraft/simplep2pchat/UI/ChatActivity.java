@@ -84,7 +84,7 @@ public class ChatActivity extends AppCompatActivity {
 
         buttonSend = findViewById(R.id.buttonSend);
         listView = findViewById(R.id.listView1);
-        initMessage();
+//        initMessage();
 
         chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(), R.layout.activity_chat_singlemessage);
         listView.setAdapter(chatArrayAdapter);

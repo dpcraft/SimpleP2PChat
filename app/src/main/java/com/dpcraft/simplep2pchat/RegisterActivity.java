@@ -100,28 +100,17 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
         mUserNameEditText = findViewById(R.id.et_username);
         mPortEditText = findViewById(R.id.et_port);
-        /*mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });*/
+
 
         Button mRegisterButton = findViewById(R.id.btn_register);
         mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                userInfoList = Test.initUserInfoList();
-                databaseHelper.refreshUserInfo(userInfoList);
-                ContactsActivity.actionStart(RegisterActivity.this,"");
 
-                //attemptLogin();
+
+
+                attemptLogin();
             }
         });
 
