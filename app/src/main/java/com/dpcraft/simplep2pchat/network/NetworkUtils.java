@@ -4,11 +4,16 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import com.dpcraft.simplep2pchat.ChatMessage;
+
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteOrder;
 
+import static android.content.ContentValues.TAG;
 import static android.content.Context.WIFI_SERVICE;
 
 /**
@@ -36,6 +41,34 @@ public class NetworkUtils {
             ipAddressString = null;
         }
         return ipAddressString;
+    }
+
+    public void sendMsgToUser(final ChatMessage chatMessage, final String host,final int port)
+    {
+        Thread sendthread  = new Thread(){
+            @Override
+            public void run() {
+                try
+                {
+                    Socket socket;
+                    Log.e(TAG, "run: "+ port );
+                    InetAddress address = InetAddress.getByName(host);
+                    Log.e(TAG, "run: addr"+address );
+                    socket = new Socket(address, port);
+                    //log.d for writing msg
+                    Log.e(TAG, "SendMsgUtil: socket created");
+                    //Send the message to the server
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                    Log.e(TAG, "SendMsgUtil: msg sent");
+                    objectOutputStream.writeObject(chatMessage);
+                }
+                catch (Exception exception)
+                {
+                    exception.printStackTrace();
+                }
+            }
+        };
+        sendthread.start();
     }
 
 }
