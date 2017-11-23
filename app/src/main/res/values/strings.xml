@@ -16,4 +16,9 @@
         completions."
     </string>
     <string name="db_name">P2PChat.db</string>
+
+
+
+
+    <string name="actionbar_contacts">在线用户</string>
 </resources>

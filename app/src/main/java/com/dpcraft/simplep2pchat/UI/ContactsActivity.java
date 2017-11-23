@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,6 +32,10 @@ public class ContactsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
+        Toolbar contactsToolbar= findViewById(R.id.tb_contacts);
+        contactsToolbar.setTitle(getResources().getString(R.string.actionbar_contacts));
+        setSupportActionBar(contactsToolbar);
+
         databaseHelper = new MyDatabaseHelper(this,getResources().getString(R.string.db_name),null,1);
         userInfoList = databaseHelper.getUserInfoList();
         Log.i(TAG, Integer.toString(userInfoList.size()));

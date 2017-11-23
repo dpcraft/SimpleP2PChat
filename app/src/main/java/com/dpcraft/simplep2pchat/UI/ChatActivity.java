@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.dpcraft.simplep2pchat.ChatMessage;
 import com.dpcraft.simplep2pchat.R;
 import com.dpcraft.simplep2pchat.app.Config;
+import com.dpcraft.simplep2pchat.app.MyApplication;
 import com.dpcraft.simplep2pchat.database.MyDatabaseHelper;
 import com.dpcraft.simplep2pchat.test.Test;
 
@@ -45,9 +47,8 @@ public class ChatActivity extends AppCompatActivity {
     static ListView listView;
     static EditText chatText;
     static Button buttonSend;
-
-    //static String me = SmsActivity.pref.getMobileNumber();
-    static String me = "me";
+    private Toolbar mToolbar;
+    static String me = MyApplication.getInstance().getUserName();
     private static String receiver = null;
     private static Context context = null;
     static MyDatabaseHelper db;
@@ -77,6 +78,10 @@ public class ChatActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         receiver = intent.getStringExtra("username");
+        mToolbar = findViewById(R.id.tb_chat);
+        mToolbar.setTitle(receiver);
+        setSupportActionBar(mToolbar);
+
         buttonSend = findViewById(R.id.buttonSend);
         listView = findViewById(R.id.listView1);
         initMessage();
@@ -99,15 +104,13 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View arg0) {
                 try {
                     //create a new msg;
-                    if (groupflag.equals("false")) {
                         ChatMessage chatMessage = new ChatMessage();
 
                         chatMessage.setMessage(chatText.getText().toString());
+                        chatMessage.setReceiver(receiver);
                         Log.e(TAG, "onClick: new tag " + chatMessage.getMessage());
                         chatMessage.setSender(me);
-
                         sendRecvChatMessage(chatMessage);
-                    }
 
                 } catch (ExecutionException e) {
                     e.printStackTrace();
