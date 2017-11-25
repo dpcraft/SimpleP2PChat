@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.dpcraft.simplep2pchat.UI.ContactsActivity;
@@ -16,9 +17,13 @@ import com.dpcraft.simplep2pchat.data.ResponseFromServer;
 import com.dpcraft.simplep2pchat.data.UserInfo;
 import com.dpcraft.simplep2pchat.database.MyDatabaseHelper;
 import com.dpcraft.simplep2pchat.network.NetworkUtils;
+import com.dpcraft.simplep2pchat.network.ServerPacketHandler;
 import com.dpcraft.simplep2pchat.network.ServerUtils;
+import com.dpcraft.simplep2pchat.network.UDP;
 import com.google.gson.Gson;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,6 +31,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static android.content.ContentValues.TAG;
 
 public class KeepAliveService extends Service {
     private final int REGISTER_SUCCESS = 200;
@@ -36,7 +43,7 @@ public class KeepAliveService extends Service {
     private ScheduledExecutorService mScheduledExecutorService;
     private TimerTask mTimerTask;
     private final int SEND_PERIOD = 5;
-    private final int SEND_DELAY = 10;
+    private final int SEND_DELAY = 20;
 
 
 
@@ -73,18 +80,36 @@ public class KeepAliveService extends Service {
         databaseHelper = new MyDatabaseHelper(this,getResources().getString(R.string.db_name),null,1);
         databaseHelper.getWritableDatabase();
         mScheduledExecutorService = Executors.newScheduledThreadPool(1);
+
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
-                ServerUtils.register(mMyApplication.getRegister(),handler);
+//                ServerUtils.register2(mMyApplication.getRegister(),handler);
+                try {
+                    Log.i(TAG, "定时任务启动 " + mMyApplication.getPort() + mMyApplication.getRegister().getName());
+
+                UDP.getUDP(mMyApplication.getPort()).sendMsg(InetAddress.getByName(Config.ServerIP), Config.ServerPort, mMyApplication.getRegister().toJSON());
+                }catch (UnknownHostException e){
+                    e.printStackTrace();
+
+                }
             }
+
         };
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
 
 
+        Log.i(TAG, "onStartCommand: 服务启动");
         mScheduledExecutorService.scheduleAtFixedRate(mTimerTask,SEND_DELAY,SEND_PERIOD, TimeUnit.SECONDS);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                UDP.getUDP(mMyApplication.getPort()).recvMsg(new ServerPacketHandler());
+            }
+        }).start();
         return super.onStartCommand(intent,flags,startId);
     }
 

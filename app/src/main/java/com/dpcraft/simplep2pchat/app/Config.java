@@ -7,7 +7,15 @@ import java.util.HashMap;
  */
 
 public class Config {
-    public static final String URL_REGISTER = "http://192.168.1.83:1234";
+
+    public static final String ServerIP = "113.54.198.98";
+    public static final int ServerPort = 12345;
+
+    public static final int REGISTER_SUCCESS = 200;
+    public static final int USERNAME_ALREADY_EXIST = 201;
     public static HashMap<String,Boolean> IncogModeUsers;
     public static final String ACTION_USER_INFO_UPDATE = "com.dpcraft.simplep2pchat.USER_INFO_UPDATE";
+
+    public static final String URL_REGISTER = "";
+
 }

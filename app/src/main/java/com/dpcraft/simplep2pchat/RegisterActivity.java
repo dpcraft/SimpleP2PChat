@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -46,8 +47,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     private final int MAX_PORT = 65535;
     private final int REGISTER_SUCCESS = 200;
     private final int USERNAME_ALREADY_EXIST = 201;
-    private List<UserInfo> userInfoList;
-    private ResponseFromServer mResponseFromServer;
+
     private MyApplication mMyApplication;
     private  Register register;
 
@@ -58,12 +58,10 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             try {
                 switch (msg.what) {
                     case REGISTER_SUCCESS:
-                        mResponseFromServer = new Gson().fromJson(msg.obj.toString(),ResponseFromServer.class);
-                        userInfoList = mResponseFromServer.getUserInfoList();
-                        databaseHelper.refreshUserInfo(userInfoList);
-                        mMyApplication.refreshToken(mResponseFromServer.getToken());
+
                         mMyApplication.setRegisterName(register.getName());
                         mMyApplication.setPort(register.getPort());
+                        Log.i("registerACT", "handleMessage: " + "regist");
                         Intent intent = new Intent(RegisterActivity.this,KeepAliveService.class);
                         startService(intent);
                         ContactsActivity.actionStart(RegisterActivity.this,"");
@@ -105,6 +103,9 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        new Register("dpcraft",54321).toJSON();
+
         mMyApplication = MyApplication.getInstance();
         databaseHelper = new MyDatabaseHelper(this,getResources().getString(R.string.db_name),null,1);
         databaseHelper.getWritableDatabase();
@@ -286,7 +287,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
             try {
                 // Simulate network access.
-                ServerUtils.register(mRegister,mHandler);
+                ServerUtils.register2(mRegister,mHandler);
 
                 Thread.sleep(2000);
             } catch (InterruptedException e) {

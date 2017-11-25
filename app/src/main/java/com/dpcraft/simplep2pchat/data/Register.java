@@ -32,6 +32,7 @@ public class Register {
 
     public String toJSON(){
         Gson gson = new Gson();
+        System.out.println(gson.toJson(this));
         return gson.toJson(this);
     }
 
