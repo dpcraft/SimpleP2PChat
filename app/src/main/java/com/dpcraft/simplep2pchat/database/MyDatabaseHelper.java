@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.icu.lang.UScript;
 import android.util.Log;
 
 import com.dpcraft.simplep2pchat.ChatMessage;
@@ -100,6 +101,27 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
         return true;
     }
+    public UserInfo getUserInfoByName(String username) {
+
+        Cursor cursor = null;
+        UserInfo userInfo = new UserInfo();
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String query = "SELECT * FROM " + TABLE_USER + " WHERE username = '" + username + "'";
+            cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    userInfo.setUsername(cursor.getString(1));
+                    userInfo.setAddress(cursor.getString(2));
+                    userInfo.setPort(cursor.getInt(3));
+                } while (cursor.moveToNext());
+            }
+        } catch (SQLiteException e) {
+            Log.d(TAG, "getConversation: sqoliteException");
+            e.printStackTrace();
+        }
+        return userInfo;
+    }
 
     public List<UserInfo> getUserInfoList(){
 
@@ -146,6 +168,36 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             String query = "SELECT * FROM " + TABLE_MSG +" WHERE sender = '"+ person + "' OR recver = '" + person + "'";
+            cursor = db.rawQuery(query,null);
+            if (cursor.moveToFirst()) {
+                do {
+                    ChatMessage msg = new ChatMessage();
+                    msg.setMessage(cursor.getString(1));
+                    msg.setSender(cursor.getString(2));
+                    msg.setReceiver(cursor.getString(3));
+                    // Adding contact to list
+                    msgList.add(msg);
+                } while (cursor.moveToNext());
+            }
+        } catch (SQLiteException e) {
+            Log.d(TAG, "getConversation: sqoliteException");
+            e.printStackTrace();
+        }
+
+        // looping through all rows and adding to list
+
+        // return msg list
+        return msgList;
+    }
+
+    public List<ChatMessage> getMSGListFromIndex(String person,int index) {  //person is contact whose chat screen you will open
+        List<ChatMessage> msgList = new ArrayList<ChatMessage>();
+        // Select All Query
+
+        Cursor cursor = null;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String query = "SELECT * FROM " + TABLE_MSG +" WHERE sender = '"+ person + "' OR recver = '" + person + "' AND id > " + index ;
             cursor = db.rawQuery(query,null);
             if (cursor.moveToFirst()) {
                 do {

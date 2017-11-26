@@ -25,7 +25,6 @@ import java.util.List;
 
 
 public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
-    //private static String TAG=ChatBubbleActivity.class.getSimpleName();
     private TextView chatText;
     private List<ChatMessage> chatMessageList = new ArrayList<ChatMessage>();
     private LinearLayout singleMessageContainer;
@@ -34,6 +33,15 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
     public void add(ChatMessage object) {
         chatMessageList.add(object);
         super.add(object);
+    }
+
+    public void refreshMsg(List<ChatMessage> list) {
+
+        chatMessageList.clear();
+        for(ChatMessage chatMessage : list) {
+            chatMessageList.add(chatMessage);
+            super.add(chatMessage);
+        }
     }
 
     public ChatArrayAdapter(Context context, int textViewResourceId) {
@@ -68,8 +76,6 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         return row;
     }
 
-    public Bitmap decodeToBitmap(byte[] decodedByte) {
-        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
-    }
+
 
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.dpcraft.simplep2pchat.ChatMessage;
 import com.dpcraft.simplep2pchat.R;
 import com.dpcraft.simplep2pchat.app.Config;
 import com.dpcraft.simplep2pchat.app.MyApplication;
@@ -46,6 +47,11 @@ public class ServerPacketHandler implements PacketHandler {
         LocalBroadcastManager.getInstance(mMyApplication).sendBroadcast(intent);
     }
 
+    private void sendChatMessageUpdateBroadcast(){
+        Intent intent = new Intent(Config.ACTION_CHAT_MSG_UPDATE);
+        LocalBroadcastManager.getInstance(mMyApplication).sendBroadcast(intent);
+    }
+
     @Override
     public boolean handle(DatagramPacket datagramPacket) {
 
@@ -63,9 +69,7 @@ public class ServerPacketHandler implements PacketHandler {
                 databaseHelper.getWritableDatabase();
                 databaseHelper.refreshUserInfo(userInfoList);
                 mMyApplication.refreshToken(mResponseFromServer.getToken());
-                for(UserInfo userInfo:databaseHelper.getUserInfoList()){
-                    System.out.print("数据库信息：" + userInfo.getName());
-                }
+
                 sendUserInfoUpdateBroadcast();
                 return true;
             }else{
@@ -73,9 +77,11 @@ public class ServerPacketHandler implements PacketHandler {
             }
 
         }else{
+            Log.i(TAG, "收到陈律的消息： "+ info);
             //handle chat message
-
-            return false;
+            databaseHelper.addMsg(ChatMessage.fromJSON(info));
+            sendChatMessageUpdateBroadcast();
+            return true;
         }
 
 

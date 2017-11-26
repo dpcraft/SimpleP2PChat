@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.dpcraft.simplep2pchat.ChatMessage;
 import com.dpcraft.simplep2pchat.app.Config;
 import com.dpcraft.simplep2pchat.data.Register;
 import com.dpcraft.simplep2pchat.data.ResponseFromServer;
@@ -92,6 +93,23 @@ public class ServerUtils {
         handler.sendMessage(message);
 
 
+
+    }
+
+
+    public static void sendMSG(final UserInfo userInfo , final ChatMessage chatMessage){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    UDP.getUDP(0).sendMsg(InetAddress.getByName(userInfo.getAddress()), userInfo.getPort(), chatMessage.toJSON());
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
 
     }
 }

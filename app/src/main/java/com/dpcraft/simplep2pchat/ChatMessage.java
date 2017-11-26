@@ -2,6 +2,7 @@ package com.dpcraft.simplep2pchat;
 
 
 import com.dpcraft.simplep2pchat.app.MyApplication;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
 
@@ -46,5 +47,16 @@ public class ChatMessage implements Serializable {
 	public boolean isSentFromMe(){
 		return getSender().equals(MyApplication.getInstance().getRegisterName());
 	}
+
+
+	public String toJSON(){
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(this));
+		return gson.toJson(this);
+	}
+	public static ChatMessage fromJSON(String JSONString){
+		return new Gson().fromJson(JSONString,ChatMessage.class);
+	}
+
 
 }
