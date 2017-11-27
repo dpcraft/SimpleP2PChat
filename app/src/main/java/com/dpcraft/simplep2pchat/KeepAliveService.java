@@ -42,8 +42,8 @@ public class KeepAliveService extends Service {
     private MyDatabaseHelper databaseHelper;
     private ScheduledExecutorService mScheduledExecutorService;
     private TimerTask mTimerTask;
-    private final int SEND_PERIOD = 1;
-    private final int SEND_DELAY = 1;
+    private final int SEND_PERIOD = 15;
+    private final int SEND_DELAY = 10;
 
 
 
